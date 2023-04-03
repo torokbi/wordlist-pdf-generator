@@ -8,6 +8,10 @@ datas = []
 
 
 def importing():
+    '''
+    Here we are importing the words from txt and excel (xls and xlsx) files.
+    This will run when the user press import button
+    '''
     # Clearing the table of previous data
     datas.clear()
 
@@ -50,10 +54,17 @@ def importing():
     ws.update()
 
 
+'''
+Create the window
+'''
 ws = Tk()
 ws.title("Quizlet pdf generátor")
 ws.geometry('800x800')
 
+
+'''
+Create the table and declarate the parameters of it
+'''
 table = ttk.Treeview(ws)
 
 table['columns'] = ('term', 'definition')
@@ -65,16 +76,27 @@ table.column('definition', width=250)
 table.heading('term', text='Kifejezés')
 table.heading('definition', text='Fogalom')
 
+# This make an empty table
 for word in datas:
     table.insert(parent='', index='end', text='',
                  values=(word[0], word[1]))
 
+
+'''
+Create the import button
+'''
 clearbutton = ttk.Button(
     ws,
     text='Importálás',
     command=importing
 )
 
+
+'''
+Add the elements to the window
+an loop the window
+'''
 table.pack()
 clearbutton.pack()
+
 ws.mainloop()
