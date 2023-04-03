@@ -94,7 +94,7 @@ clearbutton = ttk.Button(
 
 '''
 Add the elements to the window
-an loop the window
+and loop the window
 '''
 table.pack()
 clearbutton.pack()
