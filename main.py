@@ -54,6 +54,30 @@ def importing():
     ws.update()
 
 
+def flip():
+    '''
+    Here we flip the rows of the table
+    '''
+    # Flip the datas
+    temp = []
+    for word in datas:
+        temp.append([word[1],word[0]])
+
+    # Clear the table and upload the new datas
+    for i in table.get_children():
+        table.delete(i)
+
+    for index in temp:
+        table.insert(parent='', index='end', text='',
+                     values=(index[0], index[1]))
+
+    ws.update()
+
+    datas.clear()
+    for i in temp:
+        datas.append(i)
+
+
 '''
 Create the window
 '''
@@ -93,10 +117,21 @@ clearbutton = ttk.Button(
 
 
 '''
+Create the flip button
+'''
+flipbutton = ttk.Button(
+    ws,
+    text='Felcserélés',
+    command=flip
+)
+
+
+'''
 Add the elements to the window
 and loop the window
 '''
 table.pack()
 clearbutton.pack()
+flipbutton.pack()
 
 ws.mainloop()
