@@ -9,35 +9,19 @@ pdftypes = ['táblázat', 'szójegyzék', 'kicsi', 'közepes', 'nagy']
 datas = []
 
 
-class PDF(FPDF):
-    def __init__(self, **kwargs):
-        super(PDF, self).__init__(**kwargs)
-        self.add_font('LiberationSans', '', 'fonts/LiberationSans-BaDn.ttf', uni=True)
-        self.add_font('LiberationSans', 'B', 'fonts/LiberationSansBold-1adM.ttf', uni=True)
-
-    def header(self):
-        self.set_font('LiberationSans', 'B', 16)
-        self.cell(0, 5, 'Quizlet szavak export', ln=1)
-        self.set_font('LiberationSans', size=12)
-        self.cell(0, 10, 'Készült Quizlet pdf export by Török Bence', ln=1)
-
-    '''def footer(self):
-        self.set_y(-15)
-        self.set_font('helvetica', '', size=8)
-        self.set_text_color(128, 128, 128)
-        self.cell(0, 10, f'{self.page_no()}/{{nb}}', align='C')'''
-
-
 def mainconrtol():
     """
     This
     """
     if len(datas) == 0:
-        exportbutton['state'] = DISABLED
         flipbutton['state'] = DISABLED
     else:
-        exportbutton['state'] = NORMAL
         flipbutton['state'] = NORMAL
+
+    if exporttitle.get() not in ["", " "] and len(datas) != 0:
+        exportbutton['state'] = NORMAL
+    else:
+        exportbutton['state'] = DISABLED
 
     ws.after(100, mainconrtol)
 
@@ -96,7 +80,7 @@ def flip():
     # Flip the datas
     temp = []
     for word in datas:
-        temp.append([word[1],word[0]])
+        temp.append([word[1], word[0]])
 
     # Clear the table and upload the new datas
     for i in table.get_children():
@@ -117,6 +101,25 @@ def normalexport():
     """
     Here we make a pdf table from datas when the user press export button.
     """
+
+    class PDF(FPDF):
+        def __init__(self, **kwargs):
+            super(PDF, self).__init__(**kwargs)
+            self.add_font('LiberationSans', '', 'fonts/LiberationSans-BaDn.ttf', uni=True)
+            self.add_font('LiberationSans', 'B', 'fonts/LiberationSansBold-1adM.ttf', uni=True)
+
+        def header(self):
+            self.set_font('LiberationSans', 'B', 16)
+            self.cell(0, 5, f'{exporttitle.get()}', ln=1)
+            self.set_font('LiberationSans', size=12)
+            self.cell(0, 10, 'Készült Quizlet pdf export by Török Bence', ln=1)
+
+        '''def footer(self):
+            self.set_y(-15)
+            self.set_font('helvetica', '', size=8)
+            self.set_text_color(128, 128, 128)
+            self.cell(0, 10, f'{self.page_no()}/{{nb}}', align='C')'''
+
     # print(datas)
 
     pdf = PDF(orientation='P', unit='mm', format='A4')
@@ -132,14 +135,15 @@ def normalexport():
         for data_row in datas:
             row = pdftable.row()
             pdf.set_font('LiberationSans', 'B', size=16)
-            row.cell(f'{datas.index(data_row)+1}.')
+            row.cell(f'{datas.index(data_row) + 1}.')
             pdf.set_font('LiberationSans', '', size=16)
             for datum in data_row:
                 row.cell(datum)
     exportfilename = filedialog.asksaveasfilename(
-        defaultextension = ".pdf",
+        defaultextension=".pdf",
         filetypes=[('PDF fájl', '*.pdf')]
     )
+
     # print(exportfilename)
     pdf.output(exportfilename)
 
@@ -150,9 +154,6 @@ Create the window and declarate exportwindows place
 ws = Tk()
 ws.title("Quizlet pdf generátor")
 ws.geometry('800x600')
-
-exportwindow = None
-
 
 '''
 Create the table and declarate the parameters of it
@@ -173,7 +174,6 @@ for word in datas:
     table.insert(parent='', index='end', text='',
                  values=(word[0], word[1]))
 
-
 '''
 Create the import button
 '''
@@ -182,7 +182,6 @@ clearbutton = ttk.Button(
     text='Importálás',
     command=importing
 )
-
 
 '''
 Create the flip button
@@ -193,7 +192,6 @@ flipbutton = ttk.Button(
     command=flip
 )
 
-
 '''
 Create exportbutton
 '''
@@ -203,18 +201,15 @@ exportbutton = ttk.Button(
     command=normalexport
 )
 
-
 '''
 Create pdf type selector combobox
 '''
 pdftype = ttk.Combobox(ws, values=pdftypes, state='readonly', width=48)
 
-
 '''
 Create title entry
 '''
 exporttitle = Entry(ws, width=50)
-
 
 '''
 Create the labels
@@ -222,11 +217,9 @@ Create the labels
 titlelabel = Label(ws, text='Cím:')
 typelabel = Label(ws, text='Típus:')
 
-
 '''
 The grid
 '''
-
 titlelabel.grid(row=0, column=0, sticky='w', pady=2)
 typelabel.grid(row=1, column=0, sticky='w', pady=2)
 pdftype.grid(row=1, column=1, sticky="w", pady=2)
@@ -235,7 +228,6 @@ clearbutton.grid(row=0, column=2, sticky='E', pady=5, padx=10)
 flipbutton.grid(row=1, column=2, sticky='E', pady=5, padx=10)
 exportbutton.grid(row=2, column=2, sticky='E', pady=5, padx=10)
 table.grid(row=5, column=0, columnspan=8, sticky='E', pady=10)
-
 
 '''
 Add the elements to the window
@@ -246,5 +238,5 @@ clearbutton.pack()
 flipbutton.pack()
 exportbutton.pack()'''
 
-ws.after(10,mainconrtol)
+ws.after(10, mainconrtol)
 ws.mainloop()
