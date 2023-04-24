@@ -149,16 +149,20 @@ def normalexport():
 
 
 '''
-Create the window and declarate exportwindows place
+Create the window, the frame of table, and declarate exportwindows place
 '''
 ws = Tk()
 ws.title("Quizlet pdf generátor")
 ws.geometry('800x600')
 
+tableframe = Frame(ws)
+
+
+
 '''
 Create the table and declarate the parameters of it
 '''
-table = ttk.Treeview(ws)
+table = ttk.Treeview(tableframe)
 
 table['columns'] = ('term', 'definition')
 
@@ -174,6 +178,20 @@ for word in datas:
     table.insert(parent='', index='end', text='',
                  values=(word[0], word[1]))
 
+table.grid(row=0, column=0, columnspan=8, sticky='E', pady=10)
+'''
+Create the scrollbar of table
+'''
+tablesb = Scrollbar(tableframe, orient=VERTICAL)
+tablesb.grid(row=0, column=9, rowspan=10, pady=2)
+
+'''
+Connect the table and the scrollbar
+'''
+table.config(yscrollcommand=tablesb.set)
+tablesb.config(command=table.yview)
+
+
 '''
 Create the import button
 '''
@@ -182,6 +200,7 @@ clearbutton = ttk.Button(
     text='Importálás',
     command=importing
 )
+
 
 '''
 Create the flip button
@@ -192,6 +211,7 @@ flipbutton = ttk.Button(
     command=flip
 )
 
+
 '''
 Create exportbutton
 '''
@@ -201,21 +221,25 @@ exportbutton = ttk.Button(
     command=normalexport
 )
 
+
 '''
 Create pdf type selector combobox
 '''
 pdftype = ttk.Combobox(ws, values=pdftypes, state='readonly', width=48)
+
 
 '''
 Create title entry
 '''
 exporttitle = Entry(ws, width=50)
 
+
 '''
 Create the labels
 '''
 titlelabel = Label(ws, text='Cím:')
 typelabel = Label(ws, text='Típus:')
+
 
 '''
 The grid
@@ -227,16 +251,14 @@ exporttitle.grid(row=0, column=1, sticky='w', pady=2)
 clearbutton.grid(row=0, column=2, sticky='E', pady=5, padx=10)
 flipbutton.grid(row=1, column=2, sticky='E', pady=5, padx=10)
 exportbutton.grid(row=2, column=2, sticky='E', pady=5, padx=10)
-table.grid(row=5, column=0, columnspan=8, sticky='E', pady=10)
+tableframe.grid(row=5, column=0, columnspan=10, rowspan=10, sticky='E', pady=10)
+
 
 '''
 Add the elements to the window
 and loop the window
 '''
-'''table.pack()
-clearbutton.pack()
-flipbutton.pack()
-exportbutton.pack()'''
+
 
 ws.after(10, mainconrtol)
 ws.mainloop()
