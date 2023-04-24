@@ -2,9 +2,30 @@ import tkinter.filedialog
 from tkinter import *
 from tkinter import ttk, filedialog
 import pandas
+from fpdf import FPDF
 
 file = None
 datas = []
+exportitle = ""
+
+
+class PDF(FPDF):
+    def __init__(self, **kwargs):
+        super(PDF, self).__init__(**kwargs)
+        self.add_font('LiberationSans', '', 'fonts/LiberationSans-BaDn.ttf', uni=True)
+        self.add_font('LiberationSans', 'B', 'fonts/LiberationSansBold-1adM.ttf', uni=True)
+
+    def header(self):
+        self.set_font('LiberationSans', 'B', 16)
+        self.cell(0, 5, 'Quizlet szavak export', ln=1)
+        self.set_font('LiberationSans', size=12)
+        self.cell(0, 10, 'Készült Quizlet pdf export by Török Bence', ln=1)
+
+    '''def footer(self):
+        self.set_y(-15)
+        self.set_font('helvetica', '', size=8)
+        self.set_text_color(128, 128, 128)
+        self.cell(0, 10, f'{self.page_no()}/{{nb}}', align='C')'''
 
 
 def importing():
@@ -78,12 +99,45 @@ def flip():
         datas.append(i)
 
 
+def normalexport():
+    """
+    Here we make a pdf table from datas when the user press export button.
+    """
+    # print(datas)
+
+    pdf = PDF(orientation='P', unit='mm', format='A4')
+    pdf.set_auto_page_break(auto=True)
+
+    pdf.add_page()
+    # pdf.cell(0, 10, 'árvíztűrő tükörfúrógép ÁRVÍZTŰRŐ TÜKÖRFÚRÓGÉP', ln=1)
+    with pdf.table(
+            first_row_as_headings=False,
+            col_widths=(8, 32, 60),
+            line_height=4 * pdf.font_size,
+            borders_layout='HORIZONTAL_LINES') as pdftable:
+        for data_row in datas:
+            row = pdftable.row()
+            pdf.set_font('LiberationSans', 'B', size=16)
+            row.cell(f'{datas.index(data_row)+1}.')
+            pdf.set_font('LiberationSans', '', size=16)
+            for datum in data_row:
+                row.cell(datum)
+    exportfilename = filedialog.asksaveasfilename(
+        defaultextension = ".pdf",
+        filetypes=[('PDF fájl', '*.pdf')]
+    )
+    # print(exportfilename)
+    pdf.output(exportfilename)
+
+
 '''
-Create the window
+Create the window and declarate exportwindows place
 '''
 ws = Tk()
 ws.title("Quizlet pdf generátor")
 ws.geometry('800x800')
+
+exportwindow = None
 
 
 '''
@@ -127,11 +181,22 @@ flipbutton = ttk.Button(
 
 
 '''
+Create exportbutton
+'''
+exportbutton = ttk.Button(
+    ws,
+    text='Exportálás',
+    command=normalexport
+)
+
+
+'''
 Add the elements to the window
 and loop the window
 '''
 table.pack()
 clearbutton.pack()
 flipbutton.pack()
+exportbutton.pack()
 
 ws.mainloop()
