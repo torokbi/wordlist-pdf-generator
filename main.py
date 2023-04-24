@@ -5,8 +5,8 @@ import pandas
 from fpdf import FPDF
 
 file = None
+pdftypes = ['táblázat', 'szójegyzék', 'kicsi', 'közepes', 'nagy']
 datas = []
-exportitle = ""
 
 
 class PDF(FPDF):
@@ -26,6 +26,20 @@ class PDF(FPDF):
         self.set_font('helvetica', '', size=8)
         self.set_text_color(128, 128, 128)
         self.cell(0, 10, f'{self.page_no()}/{{nb}}', align='C')'''
+
+
+def mainconrtol():
+    """
+    This
+    """
+    if len(datas) == 0:
+        exportbutton['state'] = DISABLED
+        flipbutton['state'] = DISABLED
+    else:
+        exportbutton['state'] = NORMAL
+        flipbutton['state'] = NORMAL
+
+    ws.after(100, mainconrtol)
 
 
 def importing():
@@ -135,7 +149,7 @@ Create the window and declarate exportwindows place
 '''
 ws = Tk()
 ws.title("Quizlet pdf generátor")
-ws.geometry('800x800')
+ws.geometry('800x600')
 
 exportwindow = None
 
@@ -148,8 +162,8 @@ table = ttk.Treeview(ws)
 table['columns'] = ('term', 'definition')
 
 table.column("#0", width=0, stretch=NO)
-table.column('term', width=200)
-table.column('definition', width=250)
+table.column('term', width=300)
+table.column('definition', width=450)
 
 table.heading('term', text='Kifejezés')
 table.heading('definition', text='Fogalom')
@@ -191,12 +205,46 @@ exportbutton = ttk.Button(
 
 
 '''
+Create pdf type selector combobox
+'''
+pdftype = ttk.Combobox(ws, values=pdftypes, state='readonly', width=48)
+
+
+'''
+Create title entry
+'''
+exporttitle = Entry(ws, width=50)
+
+
+'''
+Create the labels
+'''
+titlelabel = Label(ws, text='Cím:')
+typelabel = Label(ws, text='Típus:')
+
+
+'''
+The grid
+'''
+
+titlelabel.grid(row=0, column=0, sticky='w', pady=2)
+typelabel.grid(row=1, column=0, sticky='w', pady=2)
+pdftype.grid(row=1, column=1, sticky="w", pady=2)
+exporttitle.grid(row=0, column=1, sticky='w', pady=2)
+clearbutton.grid(row=0, column=2, sticky='E', pady=5, padx=10)
+flipbutton.grid(row=1, column=2, sticky='E', pady=5, padx=10)
+exportbutton.grid(row=2, column=2, sticky='E', pady=5, padx=10)
+table.grid(row=5, column=0, columnspan=8, sticky='E', pady=10)
+
+
+'''
 Add the elements to the window
 and loop the window
 '''
-table.pack()
+'''table.pack()
 clearbutton.pack()
 flipbutton.pack()
-exportbutton.pack()
+exportbutton.pack()'''
 
+ws.after(10,mainconrtol)
 ws.mainloop()
