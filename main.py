@@ -18,7 +18,7 @@ def mainconrtol():
     else:
         flipbutton['state'] = NORMAL
 
-    if exporttitle.get() not in ["", " "] and len(datas) != 0:
+    if exporttitle.get() not in ["", " "] and len(datas) != 0 and pdftype.get() != '':
         exportbutton['state'] = NORMAL
     else:
         exportbutton['state'] = DISABLED
@@ -97,10 +97,11 @@ def flip():
         datas.append(i)
 
 
-def normalexport():
+def exportcontrol():
     """
     Here we make a pdf table from datas when the user press export button.
     """
+    typeindex = pdftypes.index(pdftype.get())
 
     class PDF(FPDF):
         def __init__(self, **kwargs):
@@ -120,25 +121,66 @@ def normalexport():
             self.set_text_color(128, 128, 128)
             self.cell(0, 10, f'{self.page_no()}/{{nb}}', align='C')'''
 
-    # print(datas)
+    if typeindex == 0:
+        pdf = PDF(orientation='P', unit='mm', format='A4')
+        pdf.set_auto_page_break(auto=True)
 
-    pdf = PDF(orientation='P', unit='mm', format='A4')
-    pdf.set_auto_page_break(auto=True)
+        pdf.add_page()
+        # pdf.cell(0, 10, 'árvíztűrő tükörfúrógép ÁRVÍZTŰRŐ TÜKÖRFÚRÓGÉP', ln=1)
+        with pdf.table(
+                first_row_as_headings=False,
+                col_widths=(8, 32, 60),
+                line_height=4 * pdf.font_size,
+                borders_layout='HORIZONTAL_LINES') as pdftable:
+            for data_row in datas:
+                row = pdftable.row()
+                pdf.set_font('LiberationSans', 'B', size=16)
+                row.cell(f'{datas.index(data_row) + 1}.')
+                pdf.set_font('LiberationSans', '', size=16)
+                for datum in data_row:
+                    row.cell(datum)
 
-    pdf.add_page()
-    # pdf.cell(0, 10, 'árvíztűrő tükörfúrógép ÁRVÍZTŰRŐ TÜKÖRFÚRÓGÉP', ln=1)
-    with pdf.table(
-            first_row_as_headings=False,
-            col_widths=(8, 32, 60),
-            line_height=4 * pdf.font_size,
-            borders_layout='HORIZONTAL_LINES') as pdftable:
-        for data_row in datas:
-            row = pdftable.row()
-            pdf.set_font('LiberationSans', 'B', size=16)
-            row.cell(f'{datas.index(data_row) + 1}.')
+    elif typeindex == 1:
+        pdf = PDF(orientation='P', unit='mm', format='A4')
+        pdf.set_auto_page_break(auto=True)
+
+        pdf.add_page()
+        for data in datas:
             pdf.set_font('LiberationSans', '', size=16)
-            for datum in data_row:
-                row.cell(datum)
+            pdf.write(txt=f'{datas.index(data) + 1}. ')
+            pdf.set_font('LiberationSans', 'B', size=16)
+            pdf.write(txt=f'{data[0]}: ')
+            pdf.set_font('LiberationSans', '', size=16)
+            pdf.write(txt=f'{data[1]}\n\n')
+
+    else:
+        fontsize = 0
+
+        if typeindex == 2:
+            fontsize = 10
+        elif pdftypes == 3:
+            fontsize = 16
+        elif typeindex == 4:
+            fontsize = 24
+
+        pdf = PDF(orientation='P', unit='mm', format='A4')
+        pdf.set_auto_page_break(auto=True)
+
+        pdf.add_page()
+
+        with pdf.table(
+                first_row_as_headings=False,
+                col_widths=(39, 60),
+                text_align="CENTER",
+                line_height=2 * pdf.font_size,
+                ) as pdftable:
+            pdf.set_font('LiberationSans', '', size=fontsize)
+            for data_row in datas:
+                row = pdftable.row()
+                for datum in data_row:
+                    row.cell(datum)
+
+
     exportfilename = filedialog.asksaveasfilename(
         defaultextension=".pdf",
         filetypes=[('PDF fájl', '*.pdf')]
@@ -146,7 +188,6 @@ def normalexport():
 
     # print(exportfilename)
     pdf.output(exportfilename)
-
 
 '''
 Create the window, the frame of table, and declarate exportwindows place
@@ -218,7 +259,7 @@ Create exportbutton
 exportbutton = ttk.Button(
     ws,
     text='Exportálás',
-    command=normalexport
+    command=exportcontrol
 )
 
 
