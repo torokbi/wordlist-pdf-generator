@@ -1,6 +1,7 @@
 import tkinter.filedialog
 from tkinter import *
 from tkinter import ttk, filedialog
+import webbrowser
 import pandas
 from fpdf import FPDF
 
@@ -11,7 +12,7 @@ datas = []
 
 def mainconrtol():
     """
-    This
+    This function activate and disable the buttons
     """
     if len(datas) == 0:
         flipbutton['state'] = DISABLED
@@ -27,10 +28,10 @@ def mainconrtol():
 
 
 def importing():
-    '''
+    """
     Here we are importing the words from txt and excel (xls and xlsx) files.
     This will run when the user press import button
-    '''
+    """
     # Clearing the table of previous data
     datas.clear()
 
@@ -74,9 +75,9 @@ def importing():
 
 
 def flip():
-    '''
+    """
     Here we flip the rows of the table
-    '''
+    """
     # Flip the datas
     temp = []
     for word in datas:
@@ -189,6 +190,15 @@ def exportcontrol():
     # print(exportfilename)
     pdf.output(exportfilename)
 
+
+def helper():
+    """
+    This function open the readme from the Github in a browser
+    if the user press the helper button.
+    """
+    webbrowser.open_new('https://github.com/torokbi/wordlist-pdf-generator/blob/main/README.md')
+
+
 '''
 Create the window, the frame of table, and declarate exportwindows place
 '''
@@ -199,11 +209,10 @@ ws.geometry('800x600')
 tableframe = Frame(ws)
 
 
-
 '''
 Create the table and declarate the parameters of it
 '''
-table = ttk.Treeview(tableframe)
+table = ttk.Treeview(tableframe, height=21)
 
 table['columns'] = ('term', 'definition')
 
@@ -220,11 +229,14 @@ for word in datas:
                  values=(word[0], word[1]))
 
 table.grid(row=0, column=0, columnspan=8, sticky='E', pady=10)
+
+
 '''
 Create the scrollbar of table
 '''
 tablesb = Scrollbar(tableframe, orient=VERTICAL)
 tablesb.grid(row=0, column=9, rowspan=10, pady=2)
+
 
 '''
 Connect the table and the scrollbar
@@ -262,6 +274,15 @@ exportbutton = ttk.Button(
     command=exportcontrol
 )
 
+'''
+Create the helper button
+'''
+helperbutton = ttk.Button(
+    ws,
+    text='Sugó',
+    command=helper
+)
+
 
 '''
 Create pdf type selector combobox
@@ -291,15 +312,13 @@ pdftype.grid(row=1, column=1, sticky="w", pady=2)
 exporttitle.grid(row=0, column=1, sticky='w', pady=2)
 clearbutton.grid(row=0, column=2, sticky='E', pady=5, padx=10)
 flipbutton.grid(row=1, column=2, sticky='E', pady=5, padx=10)
-exportbutton.grid(row=2, column=2, sticky='E', pady=5, padx=10)
+helperbutton.grid(row=2, column=2, sticky='E', pady=5, padx=10)
+exportbutton.grid(row=3, column=2, sticky='E', pady=5, padx=10)
 tableframe.grid(row=5, column=0, columnspan=10, rowspan=10, sticky='E', pady=10)
 
 
 '''
-Add the elements to the window
-and loop the window
+The loop of the window and mainconrtol function
 '''
-
-
 ws.after(10, mainconrtol)
 ws.mainloop()
