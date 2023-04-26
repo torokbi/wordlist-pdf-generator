@@ -25,7 +25,7 @@ vagy a forráskód segítségével futtathatja a programot, ehez azonban megfele
 ## Használat lépései
 Az alábbi fejezet a program használatán keresztül mutatja be a különböző gombok és mezők szerepét.
 Minden elemhez tartozik egy sorszám, amely azt a felyezetet jelöli ahol az adott elem tárgyalásra kerül.
-![A képen a program ablaka látható, melyen az egyes elemek sorszámozva vannak.](/Users/torokbi/Programozás/wordlist-pdf-generator/helper-items/program-window-with-counters.png)
+![A képen a program ablaka látható, melyen az egyes elemek sorszámozva vannak.](https://github.com/torokbi/wordlist-pdf-generator/blob/main/helper-items/program-window-with-counters.png)
 
 ### 1. Importálás
 Az importálás két féle módon lehetséges:
