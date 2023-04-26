@@ -103,6 +103,7 @@ def exportcontrol():
     Here we make a pdf table from datas when the user press export button.
     """
     typeindex = pdftypes.index(pdftype.get())
+    defaultfilename = ""
 
     class PDF(FPDF):
         def __init__(self, **kwargs):
@@ -181,10 +182,25 @@ def exportcontrol():
                 for datum in data_row:
                     row.cell(datum)
 
+    for index in exporttitle.get().lower():
+        if index == " ":
+            index = "-"
+        elif index in ["ü", "ű", "ú"]:
+            index = "u"
+        elif index in ["ö", "ő", "ó"]:
+            index = "o"
+        elif index == "é":
+            index = "e"
+        elif index == "í":
+            index = "i"
+        elif index == "á":
+            index = "a"
+        defaultfilename = defaultfilename + index
 
     exportfilename = filedialog.asksaveasfilename(
         defaultextension=".pdf",
-        filetypes=[('PDF fájl', '*.pdf')]
+        filetypes=[('PDF fájl', '*.pdf')],
+        initialfile=defaultfilename
     )
 
     # print(exportfilename)
@@ -204,6 +220,7 @@ Create the window, the frame of table, and declarate exportwindows place
 '''
 ws = Tk()
 ws.title("Quizlet pdf generátor")
+ws.iconbitmap('img/app-icon.ico')
 ws.geometry('800x600')
 
 tableframe = Frame(ws)
