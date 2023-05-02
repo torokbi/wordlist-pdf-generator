@@ -64,7 +64,7 @@ A szoftver az alapértelmezett fájlnevet az ön általl megadott címből áll�
 az ékezetes karaktereket ékezet nélkülire cseréli, a szóközöket pedig kötőjelekre cseréli;
 a nagybetükből pedig kisbetüt csinál.
 
-**Figyelem! Az exportálás gomb inaktív addig, amig a felhasználó nem importál be egy paklit, nem ad címet a dokumentunak és nem választja ki a dokumentum típusát!**
+**Figyelem! Az exportálás gomb inaktív addig, amig a felhasználó nem importál be egy paklit, nem ad címet a dokumentumnak és nem választja ki a dokumentum típusát!**
 
 ### Sugó
 Ha bármilyen kérdése merül fel a szoftver használatával kapcsolatban, akkor nyomja meg a sugó gombot és erre az oldalra fog jutni 😀
